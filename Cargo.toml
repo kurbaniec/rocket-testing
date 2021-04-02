@@ -15,3 +15,8 @@ dotenv = "0.15.0"
 version = "0.4.7"
 default-features = false
 features = ["diesel_mysql_pool"]
+
+[global.databases]
+test_db = { url = "MYSQL_DATABASE_URL=mysql://root@127.0.0.1:3306/diesel_test" }
+
+
