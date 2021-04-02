@@ -30,5 +30,8 @@ fn get_db(conn: TestDB) -> &'static str {
 fn main() {
     let baum: String = String::from("Baun");
     let baum: String = String::from("Baun");
-    // rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite()
+        .attach(TestDB::fairing())
+        .mount("/", routes![index, get_db])
+        .launch();
 }
