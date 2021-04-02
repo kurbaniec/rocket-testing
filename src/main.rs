@@ -4,9 +4,10 @@
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
+#[macro_use]
+extern crate diesel;
 
-use dotenv::dotenv;
-use rocket_contrib::databases::diesel;
+use rocket_testing::create_post;
 
 #[database("test_db")]
 struct TestDB(diesel::MysqlConnection);
@@ -20,6 +21,9 @@ fn index() -> &'static str {
 
 #[get("/db")]
 fn get_db(conn: TestDB) -> &'static str {
+    let title = String::from("Something");
+    let body = String::from("Great");
+    let post = create_post(&*conn, &title, &body);
     "Hello, db!"
 }
 
