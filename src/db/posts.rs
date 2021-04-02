@@ -1,17 +1,9 @@
-pub mod models;
-pub mod schema;
-
-#[macro_use]
-extern crate diesel;
 use diesel::prelude::*;
-use dotenv::dotenv;
-use std::env;
 
-use self::models::{NewPost, Post};
+use crate::models::{NewPost, Post};
+use crate::schema::posts::dsl::{id, posts};
 
 pub fn create_post<'a>(conn: &MysqlConnection, title: &'a str, body: &'a str) -> Post {
-    use schema::posts::dsl::{id, posts};
-
     let new_post = NewPost {
         title: title,
         body: body,
