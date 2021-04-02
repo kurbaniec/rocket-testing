@@ -24,9 +24,9 @@ After installation I needed to put the `libmysql.dll` from the original C-Conne
 
 
 
-Setting Database
+### Setting up the Database with Diesel CLI
 
-Not working under Windows? [See](https://users.rust-lang.org/t/diesel-error-message-actix/48320/3)
+The following does not work under Windows ([Source](https://users.rust-lang.org/t/diesel-error-message-actix/48320/3))
 
 ---
 
@@ -40,19 +40,53 @@ See [here](https://github.com/diesel-rs/diesel/blob/master/.env.sample) for more
 
 ---
 
-Setup Password
+Workaround, use `--database-url` param
 
-[See](https://stackoverflow.com/a/59218981/12347616)
+```
+diesel setup --database-url "mysql://root@127.0.0.1:3306/diesel_test"
+```
+
+### Setting up the Connection with `rocket_contrib::databases`
+
+In `Rocket.toml` NOT `Cargo.toml`
+
+```
+[global.databases]
+test_db = { url = "mysql://root@127.0.0.1:3306/diesel_test" }
+```
+
+
+
+### MySQL Tipps & Tricks
+
+#### Important
+
+For now, Diesel does not support `SSL` in MySQL. In order to use it, one must disable SSL on the Server.
+
+```
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+Now add following command
+
+```
+[mysqld]
+...
+skip_ssl
+...
+```
+
+#### Other
+
+Setup Password ([Source](https://stackoverflow.com/a/59218981/12347616))
 
 ```
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 ```
 
-Add `url` manually in CLI
+Undo (remove) Password ([Source](https://stackoverflow.com/a/3032127/12347616))
 
 ```
-diesel setup --database-url "mysql://root:1234@127.0.0.1:3306/diesel_test"
+mysqladmin -u root -p password ''
 ```
-
-
 
