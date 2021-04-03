@@ -10,6 +10,7 @@ extern crate diesel;
 use mysql::prelude::*;
 use mysql::*;
 use rocket::response::content::Json;
+use std::borrow::BorrowMut;
 
 // Import database operations
 mod db;
@@ -42,8 +43,8 @@ fn create_post(conn: TestDB) -> Json<String> {
 }
 
 #[get("/event")]
-fn create_event(conn: TestDB) -> String {
-    db::posts::create_post_event(&*conn);
+fn create_event(mut conn: EventDB) -> String {
+    db::posts::create_post_event(&mut *conn);
     String::from("ok!")
 }
 
