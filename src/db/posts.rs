@@ -16,3 +16,19 @@ pub fn create_post<'a>(conn: &MysqlConnection, title: &'a str, body: &'a str) ->
 
     posts.order(id.desc()).first(conn).unwrap()
 }
+
+pub fn create_post_event(conn: &MysqlConnection) {
+    let _ = diesel::sql_query(
+        r#"
+        CREATE EVENT IF NOT EXISTS test_event_01
+        ON SCHEDULE AT CURRENT_TIMESTAMP
+        DO
+          UPDATE posts 
+          SET title = 'TestRocket'
+          WHERE id = '2';
+    "#,
+    )
+    .execute(conn);
+    //diesel::mysql::Mysql::
+    //println!("{}", rows);
+}
