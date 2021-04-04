@@ -43,8 +43,9 @@ fn create_post(conn: TestDB) -> Json<String> {
 }
 
 #[get("/event")]
-fn create_event(mut conn: EventDB) -> String {
-    db::posts::create_post_event(&mut *conn);
+fn create_event(mut conn: TestDB) -> String {
+    //db::posts::create_post_event(&mut *conn);
+    db::posts::create_post_event(&*conn);
     String::from("ok!")
 }
 
