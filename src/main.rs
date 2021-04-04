@@ -7,10 +7,7 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate diesel;
 
-use mysql::prelude::*;
-use mysql::*;
 use rocket::response::content::Json;
-use std::borrow::BorrowMut;
 
 // Import database operations
 mod db;
@@ -22,15 +19,14 @@ mod schema;
 // Configure Database
 #[database("test_db")]
 struct TestDB(diesel::MysqlConnection);
-#[database("test_db")]
-struct EventDB(mysql::Conn);
 
+// Configure Routes
 #[get("/")]
 fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/db")]
+#[get("/add")]
 fn create_post(conn: TestDB) -> Json<String> {
     // Create a post
     let title = String::from("Something");
@@ -44,15 +40,14 @@ fn create_post(conn: TestDB) -> Json<String> {
 
 #[get("/event")]
 fn create_event(mut conn: TestDB) -> String {
-    //db::posts::create_post_event(&mut *conn);
     db::posts::create_post_event(&*conn);
     String::from("ok!")
 }
 
+// Start
 fn main() {
     rocket::ignite()
         .attach(TestDB::fairing())
-        .attach(EventDB::fairing())
         .mount("/", routes![index, create_post, create_event])
         .launch();
 }

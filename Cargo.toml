@@ -9,10 +9,8 @@ edition = "2018"
 [dependencies]
 rocket = "0.4.7"
 diesel = { version = "1.4.4", features = ["mysql"] }
-mysql = "14"
-dotenv = "0.15.0"
 
 [dependencies.rocket_contrib]
 version = "0.4.7"
 default-features = false
-features = ["diesel_mysql_pool", "mysql_pool"]
+features = ["diesel_mysql_pool"]
