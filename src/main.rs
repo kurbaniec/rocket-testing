@@ -46,6 +46,9 @@ fn create_event(mut conn: TestDB) -> String {
 
 // Start
 fn main() {
+    // TODO check if resources folder is copied successfully
+    // println!("{}", Path::new("./resources").exists());
+
     rocket::ignite()
         .attach(TestDB::fairing())
         .mount("/", routes![index, create_post, create_event])
