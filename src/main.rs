@@ -2,6 +2,7 @@
 
 #[macro_use]
 extern crate rocket;
+extern crate rocket_multipart_form_data;
 #[macro_use]
 extern crate rocket_contrib;
 #[macro_use]
@@ -33,6 +34,7 @@ fn main() {
             routes![
                 routes::test::index,
                 routes::test::image,
+                routes::test::form,
                 routes::db::create_post,
                 routes::db::create_event
             ],
