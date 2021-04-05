@@ -15,7 +15,7 @@ pub fn create_post<'a>(conn: &MysqlConnection, title: &'a str, body: &'a str) ->
 }
 
 pub fn create_post_event(conn: &MysqlConnection) {
-    conn.batch_execute(
+    let _ = conn.batch_execute(
         r#"
         CREATE EVENT IF NOT EXISTS test_event_01
         ON SCHEDULE AT CURRENT_TIMESTAMP

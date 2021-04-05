@@ -7,50 +7,35 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate diesel;
 
-use rocket::response::content::Json;
-
 // Import database operations
 mod db;
 // Import defined model structs
 mod models;
 // Import generated schemas
 mod schema;
+// import routes
+mod routes;
+// import utilities
+mod utils;
 
 // Configure Database
 #[database("test_db")]
-struct TestDB(diesel::MysqlConnection);
-
-// Configure Routes
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/add")]
-fn create_post(conn: TestDB) -> Json<String> {
-    // Create a post
-    let title = String::from("Something");
-    let body = String::from("Great");
-    // Save it to db
-    let post = db::posts::create_post(&*conn, &title, &body);
-    // Send JSON
-    // See: https://rocket.rs/v0.4/guide/responses/
-    Json(format!("{{ 'id': {} }}", &post.id))
-}
-
-#[get("/event")]
-fn create_event(mut conn: TestDB) -> String {
-    db::posts::create_post_event(&*conn);
-    String::from("ok!")
-}
+pub struct TestDB(diesel::MysqlConnection);
 
 // Start
 fn main() {
     // TODO check if resources folder is copied successfully
     // println!("{}", Path::new("./resources").exists());
-
     rocket::ignite()
         .attach(TestDB::fairing())
-        .mount("/", routes![index, create_post, create_event])
+        .mount(
+            "/",
+            routes![
+                routes::test::index,
+                routes::test::image,
+                routes::db::create_post,
+                routes::db::create_event
+            ],
+        )
         .launch();
 }
