@@ -1,8 +1,10 @@
 use crate::{db, TestDB};
-use rocket::response::content::Json;
+use rocket::response::content;
+use rocket_contrib::json;
+use serde::{Deserialize, Serialize};
 
 #[get("/add")]
-pub fn create_post(conn: TestDB) -> Json<String> {
+pub fn create_post(conn: TestDB) -> content::Json<String> {
     // Create a post
     let title = String::from("Something");
     let body = String::from("Great");
@@ -10,11 +12,24 @@ pub fn create_post(conn: TestDB) -> Json<String> {
     let post = db::posts::create_post(&*conn, &title, &body);
     // Send JSON
     // See: https://rocket.rs/v0.4/guide/responses/
-    Json(format!("{{ 'id': {} }}", &post.id))
+    content::Json(format!("{{ 'id': {} }}", &post.id))
 }
 
 #[get("/event")]
 pub fn create_event(conn: TestDB) -> String {
     db::posts::create_post_event(&*conn);
     String::from("ok!")
+}
+
+#[derive(FromForm, Deserialize)]
+pub struct CreateInfo {
+    username: String,
+    password: String,
+}
+
+#[post("/users/create", format = "json", data = "<create_info>")]
+pub fn create_user(conn: TestDB, create_info: json::Json<CreateInfo>) -> json::Json<i32> {
+    let hashed_password = crate::auth::crypto::hash_password(&create_info.0.password);
+    let user = db::users::create_user(&*conn, create_info.0.username, hashed_password);
+    json::Json(user.id)
 }

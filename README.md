@@ -20,7 +20,7 @@ Now you can install Diesel CLI with only the MySQL feature
 cargo install diesel_cli --no-default-features --features mysql
 ```
 
-After installation I needed to put the `libmysql.dll` from the original C-Connector also to the folder of the Diesel binary in `C:\Users\<user>\.cargo\bin` in order to work.
+After installation I needed to put the `libmysql.dll` from the original C-Connector also to the folder of the Diesel binary in `C:\Users\<user>\.cargo\bin` in order to work.
 
 
 
@@ -89,4 +89,12 @@ Undo (remove) Password ([Source](https://stackoverflow.com/a/3032127/12347616))
 ```
 mysqladmin -u root -p password ''
 ```
+
+
+
+### Fix Rust Crypto build under Windows
+
+See: https://github.com/DaGenix/rust-crypto/issues/369
+
+Set env var `CC=gcc`
 

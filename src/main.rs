@@ -7,6 +7,9 @@ extern crate rocket_multipart_form_data;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate diesel;
+#[macro_use]
+extern crate serde_derive;
+extern crate crypto;
 
 // Import database operations
 mod db;
@@ -16,6 +19,8 @@ mod models;
 mod schema;
 // import routes
 mod routes;
+// import auth handlers
+mod auth;
 // import utilities
 mod utils;
 
@@ -36,7 +41,8 @@ fn main() {
                 routes::test::image,
                 routes::test::form,
                 routes::db::create_post,
-                routes::db::create_event
+                routes::db::create_event,
+                routes::db::create_user,
             ],
         )
         .launch();
