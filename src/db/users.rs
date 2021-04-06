@@ -1,6 +1,7 @@
 use crate::models::{NewUser, User};
 use crate::schema::users::dsl::{id, username as dsl_username, users};
 use diesel::prelude::*;
+use diesel::result::Error;
 
 pub fn create_user<'a>(
     conn: &MysqlConnection,
@@ -20,4 +21,8 @@ pub fn create_user<'a>(
         .expect("Error saving new user");
 
     Ok(users.order(id.desc()).first(conn).unwrap())
+}
+
+pub fn get_user(conn: &MysqlConnection, username: &str) -> Result<User, Error> {
+    users.filter(dsl_username.eq(username)).first(conn)
 }

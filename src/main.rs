@@ -40,6 +40,7 @@ fn main() {
                 routes::test::index,
                 routes::test::image,
                 routes::test::form,
+                routes::test::auth_test,
                 routes::db::create_post,
                 routes::db::create_event,
                 routes::db::create_user,

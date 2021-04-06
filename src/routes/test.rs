@@ -1,3 +1,4 @@
+use crate::auth::auth::AuthenticatedUser;
 use crate::utils::res_path;
 use rocket::http::ContentType;
 use rocket::response::status::NotFound;
@@ -43,4 +44,9 @@ pub fn form(content_type: &ContentType, data: Data) -> &'static str {
         return "Ok";
     }
     "Not Ok"
+}
+
+#[get("/users/test")]
+pub fn auth_test(user: AuthenticatedUser) -> &'static str {
+    "Hi!"
 }
