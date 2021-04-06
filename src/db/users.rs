@@ -1,8 +1,17 @@
 use crate::models::{NewUser, User};
-use crate::schema::users::dsl::{id, users};
+use crate::schema::users::dsl::{id, username as dsl_username, users};
 use diesel::prelude::*;
 
-pub fn create_user<'a>(conn: &MysqlConnection, username: String, password: String) -> User {
+pub fn create_user<'a>(
+    conn: &MysqlConnection,
+    username: String,
+    password: String,
+) -> Result<User, &'static str> {
+    let exists: Result<User, _> = users.filter(dsl_username.eq(&username)).first(conn);
+    if exists.is_ok() {
+        return Err("Already exists");
+    }
+
     let new_user = NewUser { username, password };
 
     diesel::insert_into(users)
@@ -10,5 +19,5 @@ pub fn create_user<'a>(conn: &MysqlConnection, username: String, password: Strin
         .execute(conn)
         .expect("Error saving new user");
 
-    users.order(id.desc()).first(conn).unwrap()
+    Ok(users.order(id.desc()).first(conn).unwrap())
 }

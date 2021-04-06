@@ -1,4 +1,6 @@
+use crate::models::User;
 use crate::{db, TestDB};
+use rocket::http::Status;
 use rocket::response::content;
 use rocket_contrib::json;
 use serde::{Deserialize, Serialize};
@@ -28,8 +30,14 @@ pub struct CreateInfo {
 }
 
 #[post("/users/create", format = "json", data = "<create_info>")]
-pub fn create_user(conn: TestDB, create_info: json::Json<CreateInfo>) -> json::Json<i32> {
+pub fn create_user(
+    conn: TestDB,
+    create_info: json::Json<CreateInfo>,
+) -> Result<json::Json<i32>, Status> {
     let hashed_password = crate::auth::crypto::hash_password(&create_info.0.password);
     let user = db::users::create_user(&*conn, create_info.0.username, hashed_password);
-    json::Json(user.id)
+    return match user {
+        Ok(user) => Ok(json::Json(user.id)),
+        Err(_) => Err(Status::Conflict),
+    };
 }
