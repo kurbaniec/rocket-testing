@@ -1,6 +1,6 @@
 use crate::auth::auth::AuthenticatedUser;
 use crate::utils::res_path;
-use rocket::http::ContentType;
+use rocket::http::{ContentType, Cookie, Cookies, Status};
 use rocket::response::status::NotFound;
 use rocket::response::NamedFile;
 use rocket::Data;
@@ -46,6 +46,16 @@ pub fn form(content_type: &ContentType, data: Data) -> &'static str {
     "Not Ok"
 }
 
+/// Use Basic Auth header to trigger this.
+/// Using cookies will resend the cookie.
+#[post("/users/login")]
+pub fn login(user: AuthenticatedUser, mut cookies: Cookies) -> Status {
+    cookies.add_private(Cookie::new("user_id", user.user_id.to_string()));
+    Status::Ok
+}
+
+/// Test authentication.
+/// Will work with basic auth or cookie.
 #[get("/users/test")]
 pub fn auth_test(user: AuthenticatedUser) -> &'static str {
     "Hi!"
