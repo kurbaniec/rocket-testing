@@ -9,6 +9,7 @@ extern crate rocket_contrib;
 extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
+extern crate base64;
 extern crate crypto;
 
 // Import database operations

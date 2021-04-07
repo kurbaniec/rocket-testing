@@ -22,6 +22,28 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthenticatedUser {
         let username = request.headers().get_one("username");
         let password = request.headers().get_one("password");
 
+        for r in request.headers().iter() {
+            println!("{}", r.name);
+            println!("{}", r.value);
+            println!("---");
+        }
+
+        let auth = request.headers().get_one("Authorization");
+        match auth {
+            None => {
+                println!("none")
+            }
+            Some(str) => {
+                let info = str
+                    .replace("basic", "")
+                    .replace("Basic", "")
+                    .replace(" ", "");
+                println!("str {}", info);
+                let result = String::from_utf8(base64::decode(info).unwrap()).unwrap();
+                println!("str {}", &result)
+            }
+        }
+
         match (username, password) {
             (Some(u), Some(p)) => {
                 // See: https://api.rocket.rs/v0.4/rocket/request/trait.FromRequest.html#request-local-state
