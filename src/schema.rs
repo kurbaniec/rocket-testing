@@ -1,6 +1,6 @@
 table! {
     posts (id) {
-        id -> Integer,
+        id -> Unsigned<Bigint>,
         title -> Varchar,
         body -> Text,
         published -> Bool,
@@ -9,10 +9,13 @@ table! {
 
 table! {
     users (id) {
-        id -> Integer,
+        id -> Unsigned<Bigint>,
         username -> Varchar,
         password -> Varchar,
     }
 }
 
-allow_tables_to_appear_in_same_query!(posts, users,);
+allow_tables_to_appear_in_same_query!(
+    posts,
+    users,
+);

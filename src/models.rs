@@ -2,7 +2,7 @@ use crate::schema::{posts, users};
 
 #[derive(Queryable)]
 pub struct Post {
-    pub id: i32,
+    pub id: u64,
     pub title: String,
     pub body: String,
     pub published: bool,
@@ -17,7 +17,7 @@ pub struct NewPost<'a> {
 
 #[derive(Queryable)]
 pub struct User {
-    pub id: i32,
+    pub id: u64,
     pub username: String,
     pub password: String,
 }

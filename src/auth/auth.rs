@@ -6,7 +6,7 @@ use rocket::request::{FromRequest, Outcome};
 use rocket::Request;
 
 pub struct AuthenticatedUser {
-    user_id: i32,
+    user_id: u64,
 }
 
 #[derive(Debug)]

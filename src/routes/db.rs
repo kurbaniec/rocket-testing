@@ -33,7 +33,7 @@ pub struct CreateInfo {
 pub fn create_user(
     conn: TestDB,
     create_info: json::Json<CreateInfo>,
-) -> Result<json::Json<i32>, Status> {
+) -> Result<json::Json<u64>, Status> {
     let hashed_password = crate::auth::crypto::hash_password(&create_info.0.password);
     let user = db::users::create_user(&*conn, create_info.0.username, hashed_password);
     return match user {
