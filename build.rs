@@ -24,7 +24,7 @@ fn main() {
     let profile = std::env::var("PROFILE").unwrap();
     let dst_base = match profile.as_str() {
         "debug" => PathBuf::from("./target").join("debug"),
-        "release" => PathBuf::from("./target").join("debug"),
+        "release" => PathBuf::from("./target").join("release"),
         _ => PathBuf::from("./target").join("debug"),
     };
 
