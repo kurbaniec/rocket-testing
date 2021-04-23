@@ -10,57 +10,26 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-ubuntu:
+  build:
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        
-      - name: Install latest rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          default: true
-          override: true
-          
-      - name: Build
-        run: >
-          cargo build --all --release &&
-          strip target/release/rocket_testing &&
-          mv target/release/rocket_testing target/release/rocket_testing_amd64 &&
-          mkdir release &&
-          mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
-          cd release && echo $(ls) && cd .. &&
-          zip -r release.zip release &&
-          sleep 10
-
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Ubuntu Build"
-          files: |
-            release.zip
-
-  build-windows:
-
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install mysql
+      - name: Install mysql (Windows Requirement)
+        if: matrix.os == 'windows-latest'
         shell: cmd
         run: |
           choco install mysql
           "C:\tools\mysql\current\bin\mysql" -e "create database diesel_test; create database diesel_unit_test; grant all on `diesel_%`.* to 'root'@'localhost';" -uroot
 
-      - name: Set variables for mysql
+      - name: Set variables for mysql (Windows Requirement)
+        if: matrix.os == 'windows-latest'
         shell: bash
         run: |
           echo "MYSQL_DATABASE_URL=mysql://root@localhost/diesel_test" >> $GITHUB_ENV
@@ -75,7 +44,8 @@ jobs:
           default: true
           override: true
 
-      - name: Build
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
         run: >
           cargo build --all --release &&
           mkdir release &&
@@ -84,12 +54,43 @@ jobs:
           7z.exe a -tzip release.zip release &&
           sleep 10
 
+      - name: Build Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: >
+          cargo build --all --release &&
+          strip target/release/rocket_testing &&
+          mv target/release/rocket_testing target/release/rocket_testing_amd64 &&
+          mkdir release &&
+          mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
+          cd release && echo $(ls) && cd .. &&
+          zip -r release.zip release &&
+          sleep 10
+
+      # Upload the end-user binary artifact
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-${{ matrix.os }}
+          path: release.zip
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # We don't need the repo, grab all artifacts from the build stage
+      # The plugin puts each artifact in a folder of `artifactname`
+      - uses: actions/download-artifact@v2
+      - name: Display fetched artifacts
+        run: ls -R
+
       - name: Release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: "Windows Build"
+          title: "Builds"
           files: |
-            release.zip
+            build-windows-latest/*.zip
+            build-ubuntu-latest/*.zip
