@@ -33,7 +33,7 @@ jobs:
           mkdir release &&
           mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
           cd release && echo $(ls) && cd .. &&
-          zip release.zip release &&
+          zip -r release.zip release &&
           sleep 10
 
       - name: Release
@@ -81,7 +81,7 @@ jobs:
           mkdir release &&
           move target/release/rocket_testing.exe, target/release/Rocket.toml, target/release/resources release &&
           cd release && dir && cd .. &&
-          7z.exe a -tzip release &&
+          7z.exe a -tzip release.zip release &&
           sleep 10
 
       - name: Release
@@ -90,6 +90,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: "Ubuntu Build"
+          title: "Windows Build"
           files: |
             release.zip
