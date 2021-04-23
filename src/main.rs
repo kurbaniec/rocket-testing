@@ -20,8 +20,10 @@ mod models;
 mod schema;
 // import routes
 mod routes;
-// import auth handlers
+// import auth handler
 mod auth;
+// import cors handler
+mod cors;
 // import utilities
 mod utils;
 
@@ -35,6 +37,7 @@ fn main() {
     // println!("{}", Path::new("./resources").exists());
     rocket::ignite()
         .attach(TestDB::fairing())
+        .attach(cors::CORS)
         .mount(
             "/",
             routes![
