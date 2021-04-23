@@ -31,6 +31,7 @@ jobs:
           strip target/release/rocket_testing &&
           mv target/release/rocket_testing target/release/rocket_testing_amd64 &&
           mkdir release &&
+          mv resources target/release &&
           mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
           zip release.zip release
 
@@ -38,7 +39,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          name: Ubuntu Release ${{ github.ref }}
           files: |
             release.zip
         env:
@@ -77,6 +78,7 @@ jobs:
         run: >
           cargo build --all --release &&
           mkdir release &&
+          move resources target/release &&
           move target/release/rocket_testing.exe, target/release/Rocket.toml, target/release/resources release &&
           7z.exe a -tzip release
 
@@ -84,7 +86,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          name: Windows Release ${{ github.ref }}
           files: |
             target/release/rocket_testing.exe
             target/release/Rocket.toml
