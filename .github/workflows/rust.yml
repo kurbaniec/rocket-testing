@@ -31,9 +31,10 @@ jobs:
           strip target/release/rocket_testing &&
           mv target/release/rocket_testing target/release/rocket_testing_amd64 &&
           mkdir release &&
-          mv resources target/release &&
           mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
-          zip release.zip release
+          cd release && echo $(ls) && cd .. &&
+          zip release.zip release &&
+          sleep 10
 
       - name: Release
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -78,9 +79,10 @@ jobs:
         run: >
           cargo build --all --release &&
           mkdir release &&
-          move resources target/release &&
           move target/release/rocket_testing.exe, target/release/Rocket.toml, target/release/resources release &&
-          7z.exe a -tzip release
+          cd release && dir && cd .. &&
+          7z.exe a -tzip release &&
+          sleep 10
 
       - name: Release
         uses: "marvinpinto/action-automatic-releases@latest"
