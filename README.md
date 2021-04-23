@@ -98,3 +98,9 @@ See: https://github.com/DaGenix/rust-crypto/issues/369
 
 Set env var `CC=gcc`
 
+### Generated Builds Show `libssl-1_1-x64.dll` not found
+
+```
+choco install openssl
+```
+

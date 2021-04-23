@@ -51,8 +51,7 @@ jobs:
           mkdir release &&
           move target/release/rocket_testing.exe, target/release/Rocket.toml, target/release/resources release &&
           cd release && dir && cd .. &&
-          7z.exe a -tzip release.zip release &&
-          sleep 10
+          7z.exe a -tzip windows-build.zip release
 
       - name: Build Ubuntu
         if: matrix.os == 'ubuntu-latest'
@@ -63,14 +62,13 @@ jobs:
           mkdir release &&
           mv target/release/rocket_testing_amd64 target/release/Rocket.toml target/release/resources release &&
           cd release && echo $(ls) && cd .. &&
-          zip -r release.zip release &&
-          sleep 10
+          zip -r ubuntu-build.zip release
 
       # Upload the end-user binary artifact
       - uses: actions/upload-artifact@v2
         with:
           name: build-${{ matrix.os }}
-          path: release.zip
+          path: ./*.zip
           retention-days: 1
 
   release:
