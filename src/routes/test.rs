@@ -54,6 +54,13 @@ pub fn login(user: AuthenticatedUser, mut cookies: Cookies) -> Status {
     Status::Ok
 }
 
+/// Removes set cookie.
+#[post("/users/logout")]
+pub fn logout(_user: AuthenticatedUser, mut cookies: Cookies) -> Status {
+    cookies.remove_private(Cookie::named("user_id"));
+    Status::Ok
+}
+
 /// Test authentication.
 /// Will work with basic auth or cookie.
 #[get("/users/test")]

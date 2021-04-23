@@ -46,6 +46,7 @@ fn main() {
                 routes::test::form,
                 routes::test::auth_test,
                 routes::test::login,
+                routes::test::logout,
                 routes::db::create_post,
                 routes::db::create_event,
                 routes::db::create_user,
