@@ -80,7 +80,10 @@ fn get_basic_auth_info(input: &str) -> Result<(String, String), &'static str> {
     match base64::decode(input) {
         Ok(decoded) => match String::from_utf8(decoded) {
             Ok(auth) => {
-                let mut auth_split = auth.split(":").collect::<Vec<&str>>();
+                // Split at first `:`
+                // See: https://stackoverflow.com/a/11612931/12347616
+                // And: https://stackoverflow.com/a/41517340/12347616
+                let mut auth_split = auth.splitn(2, ":").collect::<Vec<&str>>();
                 if auth_split.len() == 2 {
                     Ok((
                         auth_split.get(0).unwrap().to_string(),
