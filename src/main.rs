@@ -8,9 +8,13 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
+extern crate diesel_migrations;
+#[macro_use]
 extern crate serde_derive;
 extern crate base64;
 extern crate crypto;
+
+use rocket::fairing::AdHoc;
 
 // Import database operations
 mod db;
@@ -37,6 +41,7 @@ fn main() {
     // println!("{}", Path::new("./resources").exists());
     rocket::ignite()
         .attach(TestDB::fairing())
+        .attach(AdHoc::on_attach("Database Migration", db::run_db_migration))
         .attach(cors::CORS)
         .mount(
             "/",
